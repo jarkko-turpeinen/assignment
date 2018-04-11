@@ -1,6 +1,5 @@
 package com.library.rest;
 
-import com.library.rest.Library;
 import org.junit.Test;
 
 import java.util.stream.IntStream;
@@ -25,7 +24,6 @@ public class LibraryI {
     public void getEquipments() {
         IntStream
             .range(1, Library.LIMIT_MAX + 1)
-            .parallel()
             .forEachOrdered(limit -> {
                 try {
                     assertThat("getEquipments by limit", Library.getEquipments(limit), is(200));
@@ -34,5 +32,4 @@ public class LibraryI {
                 }
             });
     }
-
 }
