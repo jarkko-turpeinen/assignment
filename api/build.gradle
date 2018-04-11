@@ -1,0 +1,23 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+version '0.1.0'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+dependencies {
+    compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
+    testCompile 'junit:junit:4.12'
+}
