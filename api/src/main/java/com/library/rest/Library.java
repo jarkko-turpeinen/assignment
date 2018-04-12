@@ -1,11 +1,19 @@
 package com.library.rest;
 ;
 import com.cloudant.client.api.Database;
+import com.cloudant.client.api.query.QueryBuilder;
+import com.cloudant.client.api.query.QueryResult;
+import com.cloudant.client.api.query.Sort;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
+import java.util.List;
+
+import static com.cloudant.client.api.query.Expression.*;
+import static com.library.rest.Cloudant.getDatabase;
 
 /**
- * REST Service for IOT Equipment metadata maintenance
+ * REST Service for IOT Equipment metadata maintenance in IBM Cloudant NoSQL DB for IBM Cloud
  */
 @ApplicationPath("equipment")
 public final class Library extends Application {
@@ -22,7 +30,7 @@ public final class Library extends Application {
     private final static String UID = "28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix";
     private final static String PWD = "e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2";
 
-    Database db = Cloudant.getDatabase(URL, UID, PWD);
+    Database db = getDatabase(URL, UID, PWD);
 
     /**
      * User invokes a GET request from a REST URL to search Equipment
@@ -43,20 +51,25 @@ public final class Library extends Application {
     @GET
     @Path("/equipment/{equipmentNumber}")
     @Produces({"application/json"})
-    public final Integer getEquipment(String equipmentNumber) throws Exception {
+    public final List<Equipment> getEquipment(String equipmentNumber) throws Exception {
         Logger.debug("getEquipment(" + equipmentNumber + ")");
-        Equipment equipment = null;
+        List<Equipment> result = null;
         try {
             validateParameterEquipmentNumber(equipmentNumber);
             if (db != null) {
-                equipment = db.find(Equipment.class, equipmentNumber);
-                Logger.debug(equipment.toString());
+                result =
+                        db.query(
+                                new QueryBuilder(eq("equipmentNumber", equipmentNumber))
+                                        .limit(LIMIT_MAX)
+                                        .build()
+                                , Equipment.class
+                        ).getDocs();
             }
         } catch (Exception e) {
             Logger.error(e.getMessage());
             throw new Exception("getEquipment: " + e);
         }
-        return 200;
+        return result;
     }
 
     private final void validateParameterEquipmentNumber(String equipmentNumber) throws Exception {
@@ -89,12 +102,24 @@ public final class Library extends Application {
     @Produces({"application/json"})
     public final Integer getEquipments(Integer limit) throws Exception {
         Logger.debug("getEquipments(" + limit + ")");
+        List<Equipment> result = null;
         try {
           validateParameterLimit(limit);
+          if (db != null) {
+              result =
+                      db.query(
+                              new QueryBuilder(ne("equipmentNumber", "null"))
+                                      //.sort(Sort.asc("equipmentNumber")) // TODO index equipmentNumber for sorting
+                                      .limit(limit)
+                                      .build()
+                              , Equipment.class
+                      ).getDocs();
+          }
         } catch (Exception e) {
             Logger.error(e.getMessage());
             throw new Exception("getEquipments: " + e.getMessage());
         }
+        result.forEach(e -> Logger.debug(e.toString()));
         return 200;
     }
 
@@ -120,13 +145,14 @@ public final class Library extends Application {
      * @return http code
      * @throws Exception
      */
-    @PUT
+    @POST
     @Path("/equipment")
     @Consumes({"application/json"})
-    public final Integer putEquipment(Equipment equipment) throws Exception {
-        Logger.debug("putEquipment(" + equipment + ")");
+    public final Integer postEquipment(Equipment equipment) throws Exception {
+        Logger.debug("postEquipment(" + equipment + ")");
         try {
             validateParameterEquipment(equipment);
+            db.save(equipment);
         } catch (Exception e) {
             Logger.error(e.getMessage());
             throw new Exception("putEquipment: " + e.getMessage());

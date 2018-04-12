@@ -50,16 +50,16 @@ public class LibraryU {
     }
 
     @Test
-    public void putEquipment_Equipment_null() throws Exception {
+    public void postEquipment_Equipment_null() throws Exception {
         thrown.expect(Exception.class);
         thrown.expectMessage(Library.INVALID_EQUIPMENT);
-        library.putEquipment(null);
+        library.postEquipment(null);
     }
 
     @Test
-    public void putEquipment_Equipment_invalid() throws Exception {
+    public void postEquipment_Equipment_invalid() throws Exception {
         thrown.expect(Exception.class);
         thrown.expectMessage(Library.INVALID_EQUIPMENT);
-        library.putEquipment(new Equipment());
+        library.postEquipment(new Equipment());
     }
 }

@@ -3,7 +3,7 @@ package com.library.rest;
 import java.util.Date;
 
 /**
- *  IoT Equipment
+ *  Equipment document
  */
 public final class Equipment {
     private String equipmentNumber;
@@ -11,6 +11,8 @@ public final class Equipment {
     private Date contractStartDate;
     private Date contractEndDate;
     private String status;
+    private String _id;
+    private String _rev;
 
     public Equipment() {}
 
@@ -34,6 +36,7 @@ public final class Equipment {
     /**
      * Validates Equipment Number
      *
+     * @param equipmentNumber
      * @return boolean
      */
     public static boolean isValidEquipmentNumber(String equipmentNumber) {
@@ -94,6 +97,24 @@ public final class Equipment {
         return status;
     }
 
+    /**
+     * IoT Equipment cloudant row id
+     *
+     * @return String _id
+     */
+    public String get_id() {
+        return _id;
+    }
+
+    /**
+     * IoT Equipment cloudant row revision
+     *
+     * @return String _rev
+     */
+    public String get_rev() {
+        return _rev;
+    }
+
     @Override
     public String toString() {
         return "Equipment{" +
@@ -102,6 +123,8 @@ public final class Equipment {
                 ", contractStartDate=" + contractStartDate +
                 ", contractEndDate=" + contractEndDate +
                 ", status='" + status + '\'' +
+                ", _id='" + _id + '\'' +
+                ", _rev='" + _rev + '\'' +
                 '}';
     }
 }

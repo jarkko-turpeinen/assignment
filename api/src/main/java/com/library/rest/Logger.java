@@ -2,6 +2,9 @@ package com.library.rest;
 
 import java.text.DateFormat;
 
+/**
+ * Logging inside bluemix cloud is by default system output driven
+ */
 public final class Logger {
 
     private static void writeLog(String details) {

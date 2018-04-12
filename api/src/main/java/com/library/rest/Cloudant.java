@@ -6,10 +6,12 @@ import com.cloudant.client.api.Database;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * IBM® Cloudant® NoSQL DB for IBM Cloud connector
+ */
 public final class Cloudant {
 
     private static URL getUrlObject(String url){
-        Logger.debug("getDatabase");
         URL urlObject = null;
         try {
            urlObject = new URL(url);
@@ -20,8 +22,9 @@ public final class Cloudant {
     }
 
     /**
-     * Creates connection to cloudant database
-     * First tries to connect by bluemix VCAP credentials
+     * Creates cloudant client object to return database object
+     *
+     * Tries to create client by bluemix VCAP credentials and if not found,
      * then by passed url, username and password values
      *
      * @param url
@@ -33,23 +36,29 @@ public final class Cloudant {
         Logger.debug("getDatabase");
         CloudantClient client = null;
         Database database = null;
-        final String credentials = System.getProperty("VCAP_METADATA");
-        if (credentials != null) {
-            Logger.debug("connect cloudant by bluemix credentials");
-            client = ClientBuilder.bluemix(credentials).build();
-        } else if (url != null) {
-            Logger.debug("connect cloudant by url");
-            client = ClientBuilder.url(getUrlObject(url))
-                    .username(username)
-                    .password(password)
-                    .build();
-        } else {
-            Logger.info("no database connection");
+        // Credentials for database
+        {
+            final String credentials = System.getProperty("VCAP_METADATA");
+            if (credentials != null) {
+                Logger.debug("IBM Cloudant NoSQL DB for IBM Cloud");
+                client = ClientBuilder.bluemix(credentials).build();
+            } else if (url != null) {
+                Logger.debug("From url");
+                client = ClientBuilder.url(getUrlObject(url))
+                        .username(username)
+                        .password(password)
+                        .build();
+            } else {
+                Logger.info("no database credentials provided");
+            }
         }
-        final String databaseName = client.getAllDbs().get(0);
-        if (databaseName != null) {
-            Logger.debug("using database " + databaseName);
-            database = client.database(databaseName, false);
+        // Use first database if multiple are returned
+        {
+            final String databaseName = client.getAllDbs().get(0);
+            if (databaseName != null) {
+                database = client.database(databaseName, false);
+                Logger.debug("CouchDbInfo [dbName=" + database.info().getDbName() + "]");
+            }
         }
         return database;
     }
