@@ -1,7 +1,6 @@
 package com.library.rest;
 
 import org.junit.Test;
-
 import java.util.stream.IntStream;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -11,10 +10,12 @@ import static org.junit.Assert.assertThat;
  */
 public class LibraryI {
 
+    Library library = new Library();
+
     @Test
     public void getEquipment() throws Exception {
-        assertThat("getEquipment result", Library.getEquipment("1"), is(200));
-        assertThat("getEquipment result", Library.getEquipment("2"), is(200));
+        assertThat("getEquipment result", library.getEquipment("1"), is(200));
+        assertThat("getEquipment result", library.getEquipment("2"), is(200));
     }
 
     /**
@@ -26,7 +27,7 @@ public class LibraryI {
             .range(1, Library.LIMIT_MAX + 1)
             .forEachOrdered(limit -> {
                 try {
-                    assertThat("getEquipments by limit", Library.getEquipments(limit), is(200));
+                    assertThat("getEquipments by limit", library.getEquipments(limit), is(200));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

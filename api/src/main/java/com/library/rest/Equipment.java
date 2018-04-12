@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  *  IoT Equipment
  */
-public class Equipment {
+public final class Equipment {
     private String equipmentNumber;
     private String address;
     private Date contractStartDate;

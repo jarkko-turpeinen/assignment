@@ -1,14 +1,14 @@
 package com.library.rest;
-
+;
+import com.cloudant.client.api.Database;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
-import java.text.DateFormat;
 
 /**
  * REST Service for IOT Equipment metadata maintenance
  */
 @ApplicationPath("equipment")
-public class Library extends Application {
+public final class Library extends Application {
 
     /**
      * Maximum number of Equipments to return
@@ -18,11 +18,11 @@ public class Library extends Application {
     public final static String INVALID_LIMIT = "Parameter Limit is invalid";
     public final static String INVALID_EQUIPMENT = "Parameter Equipment is invalid";
 
-    final static void debug(String details) {
-        System.out.print(DateFormat.getDateTimeInstance().format(System.currentTimeMillis()));
-        System.out.print(" - ");
-        System.out.println(details);
-    }
+    private final static String URL = "https://28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix:e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2@28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix.cloudant.com";
+    private final static String UID = "28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix";
+    private final static String PWD = "e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2";
+
+    Database db = Cloudant.getDatabase(URL, UID, PWD);
 
     /**
      * User invokes a GET request from a REST URL to search Equipment
@@ -43,18 +43,23 @@ public class Library extends Application {
     @GET
     @Path("/equipment/{equipmentNumber}")
     @Produces({"application/json"})
-    public final static Integer getEquipment(String equipmentNumber) throws Exception {
-        debug("getEquipment(" + equipmentNumber + ")");
+    public final Integer getEquipment(String equipmentNumber) throws Exception {
+        Logger.debug("getEquipment(" + equipmentNumber + ")");
+        Equipment equipment = null;
         try {
             validateParameterEquipmentNumber(equipmentNumber);
+            if (db != null) {
+                equipment = db.find(Equipment.class, equipmentNumber);
+                Logger.debug(equipment.toString());
+            }
         } catch (Exception e) {
-            debug(e.getMessage());
+            Logger.error(e.getMessage());
             throw new Exception("getEquipment: " + e);
         }
         return 200;
     }
 
-    private final static void validateParameterEquipmentNumber(String equipmentNumber) throws Exception {
+    private final void validateParameterEquipmentNumber(String equipmentNumber) throws Exception {
         if (equipmentNumber == null || !Equipment.isValidEquipmentNumber(equipmentNumber)) {
             throw new Exception(INVALID_EQUIPMENT_NUMBER);
         }
@@ -82,18 +87,18 @@ public class Library extends Application {
     @Path("/search")
     @PathParam("limit")
     @Produces({"application/json"})
-    public final static Integer getEquipments(Integer limit) throws Exception {
-        debug("getEquipments(" + limit + ")");
+    public final Integer getEquipments(Integer limit) throws Exception {
+        Logger.debug("getEquipments(" + limit + ")");
         try {
           validateParameterLimit(limit);
         } catch (Exception e) {
-            debug(e.getMessage());
+            Logger.error(e.getMessage());
             throw new Exception("getEquipments: " + e.getMessage());
         }
         return 200;
     }
 
-    private final static void validateParameterLimit(Integer limit) throws Exception {
+    private static void validateParameterLimit(Integer limit) throws Exception {
         if (limit == null || limit < 1 | limit > LIMIT_MAX) {
             throw new Exception(INVALID_LIMIT);
         }
@@ -118,18 +123,18 @@ public class Library extends Application {
     @PUT
     @Path("/equipment")
     @Consumes({"application/json"})
-    public final static Integer putEquipment(Equipment equipment) throws Exception {
-        debug("putEquipment(" + equipment + ")");
+    public final Integer putEquipment(Equipment equipment) throws Exception {
+        Logger.debug("putEquipment(" + equipment + ")");
         try {
             validateParameterEquipment(equipment);
         } catch (Exception e) {
-            debug(e.getMessage());
+            Logger.error(e.getMessage());
             throw new Exception("putEquipment: " + e.getMessage());
         }
         return 200;
     }
 
-    private final static void validateParameterEquipment(Equipment equipment) throws Exception {
+    private static void validateParameterEquipment(Equipment equipment) throws Exception {
         if (equipment == null || !equipment.isValid()) {
             throw new Exception(INVALID_EQUIPMENT);
         }

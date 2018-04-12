@@ -19,5 +19,6 @@ sourceCompatibility = 1.8
 
 dependencies {
     compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
+    compile 'com.cloudant:cloudant-client:2.12.0'
     testCompile 'junit:junit:4.12'
 }

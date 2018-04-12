@@ -1,0 +1,6 @@
+*.iml
+.gradle/*
+.idea/*
+api/.gradle/*
+api/build/*
+api/out/*
