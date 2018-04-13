@@ -18,14 +18,20 @@ public final class Library extends Application {
      * Maximum number of Equipments to return
      */
     public final static Integer LIMIT_MAX = 10;
+
+    /**
+     * Validation exceptions
+     */
     public final static String INVALID_EQUIPMENT_NUMBER = "Parameter Equipment Number is invalid";
     public final static String INVALID_LIMIT = "Parameter Limit is invalid";
     public final static String INVALID_EQUIPMENT = "Parameter Equipment is invalid";
-    public final static String NO_DATABASE_CONNECTION = "no database connection";
 
-    private final static String URL = "https://28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix:e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2@28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix.cloudant.com";
-    private final static String UID = "28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix";
-    private final static String PWD = "e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2";
+    private static Database getCloudantDatabase() throws Exception {
+        final String URL = "https://28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix.cloudant.com";
+        final String UID = "28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix";
+        final String PWD = "e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2";
+        return getDatabase(URL, UID, PWD);
+    }
 
     /**
      * User invokes a GET request from a REST URL to search Equipment
@@ -45,7 +51,7 @@ public final class Library extends Application {
         List<Equipment> result = null;
         try {
             validateParameterEquipmentNumber(equipmentNumber);
-            Database db = getDatabase(URL, UID, PWD);
+            Database db = getCloudantDatabase();
             if (db != null) {
                 result =
                         db.query(
@@ -54,8 +60,6 @@ public final class Library extends Application {
                                         .build()
                                 , Equipment.class
                         ).getDocs();
-            } else {
-                throw new Exception(NO_DATABASE_CONNECTION);
             }
         } catch (Exception e) {
             Logger.error(e.getMessage());
@@ -90,7 +94,7 @@ public final class Library extends Application {
         List<Equipment> result = null;
         try {
           validateParameterLimit(limit);
-          Database db = getDatabase(URL, UID, PWD);
+          Database db = getCloudantDatabase();
           if (db != null) {
               result =
                       db.query(
@@ -100,8 +104,6 @@ public final class Library extends Application {
                                       .build()
                               , Equipment.class
                       ).getDocs();
-          } else {
-              throw new Exception(NO_DATABASE_CONNECTION);
           }
         } catch (Exception e) {
             Logger.error(e.getMessage());
@@ -123,7 +125,7 @@ public final class Library extends Application {
      * API validates the input and generates error for duplicate Equipment
      *
      * @param equipment Equipment identifying number
-     * @return Saved Equipmet document
+     * @return Equipmet document
      * @throws Exception Invalid parameter Equipment or CouchDB exception
      */
     @POST
@@ -133,12 +135,8 @@ public final class Library extends Application {
         Logger.debug("postEquipment(" + equipment + ")");
         try {
             validateParameterEquipment(equipment);
-            Database db = getDatabase(URL, UID, PWD);
-            if (db != null) {
-                db.save(equipment);
-            } else {
-                throw new Exception(NO_DATABASE_CONNECTION);
-            }
+            Database db = getCloudantDatabase();
+            db.save(equipment);
         } catch (Exception e) {
             Logger.error(e.getMessage());
             throw new Exception("postEquipment: " + e.getMessage());

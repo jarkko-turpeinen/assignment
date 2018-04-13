@@ -14,28 +14,23 @@ public class LibraryI {
 
     Library library = new Library();
 
-    private final static String URL = "https://28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix:e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2@28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix.cloudant.com";
-    private final static String UID = "28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix";
-    private final static String PWD = "e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2";
-
-    Database db = getDatabase(URL, UID, PWD);
-
     @Test
-    public void postEquipment() {
-        db.save(new Equipment("1000000003", "127.0.0.1", null, null, "Stopped"));
+    public void postEquipment()throws Exception {
+        Equipment equipment = library.postEquipment(new Equipment("1000000003", "127.0.0.1", null, null, "Stopped"));
+        assertThat("getEquipment result", equipment.getEquipmentNumber(), is("1000000003"));
     }
 
     @Test
     public void getEquipment() throws Exception {
-        final String equipmentNumber = library.getEquipment("1000000001").get(0).getEquipmentNumber();
-        assertThat("getEquipment result", equipmentNumber, is("1000000001"));
+        final Equipment equipment = library.getEquipment("1000000001").get(0);
+        assertThat("getEquipment result", equipment.getEquipmentNumber(), is("1000000001"));
     }
 
     /**
      * Test all valid limit values (overkill, just for the show)
      */
     @Test
-    public void getEquipments() {
+    public void getEquipments() throws Exception {
         IntStream
             .range(1, Library.LIMIT_MAX + 1)
             .forEach(limit -> {
