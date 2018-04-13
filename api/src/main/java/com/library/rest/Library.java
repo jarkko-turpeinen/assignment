@@ -2,13 +2,9 @@ package com.library.rest;
 ;
 import com.cloudant.client.api.Database;
 import com.cloudant.client.api.query.QueryBuilder;
-import com.cloudant.client.api.query.QueryResult;
-import com.cloudant.client.api.query.Sort;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
 import java.util.List;
-
 import static com.cloudant.client.api.query.Expression.*;
 import static com.library.rest.Cloudant.getDatabase;
 
@@ -38,7 +34,7 @@ public final class Library extends Application {
      *
      * Example GET URL: http://ServerName/applicationName/equipment/{equipmentNumber}
      *
-     * @param equipmentNumber
+     * @param equipmentNumber Equipment identifying number
      * @return JSON object
      *  Equipment in result consists of following attributes:
      *  Equipment Number
@@ -46,7 +42,7 @@ public final class Library extends Application {
      *  Contract Start Date
      *  Contract End Date
      *  Status (Running or Stopped)
-     * @throws Exception
+     * @throws Exception Invalid parameter
      */
     @GET
     @Path("/equipment/{equipmentNumber}")
@@ -94,7 +90,7 @@ public final class Library extends Application {
      *  Contract End Date
      *  Status (Running or Stopped)
      *
-     * @throws Exception
+     * @throws Exception Invalid parameter
      */
     @GET
     @Path("/search")
@@ -135,7 +131,7 @@ public final class Library extends Application {
      * Each POST consists of One Equipment JSON object
      * API validates the input and generates error for duplicate Equipment
      *
-     * @param equipment
+     * @param equipment Equipment identifying number
      *  Equipment consists of following attributes:
      *  Equipment Number
      *  Address
@@ -143,7 +139,7 @@ public final class Library extends Application {
      *  Contract End Date
      *  Status (Running or Stopped)
      * @return http code
-     * @throws Exception
+     * @throws Exception Invalid parameter
      */
     @POST
     @Path("/equipment")

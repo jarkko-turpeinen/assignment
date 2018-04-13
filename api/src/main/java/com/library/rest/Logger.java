@@ -15,14 +15,14 @@ public final class Logger {
     /**
      * Write logging details to system output
      *
-     * @param details
+     * @param details log description
      */
     public static void info(String details) { writeLog("<info> " + details); }
 
     /**
      * Write debugging details to system output
      *
-     * @param details
+     * @param details debug description
      */
     public static void debug(String details) {
         writeLog("<debug> "+ details);
@@ -31,7 +31,7 @@ public final class Logger {
     /**
      * Write error details to system output
      *
-     * @param details
+     * @param details error description
      */
     public static void error(String details) {
         writeLog( "<error> " + details);

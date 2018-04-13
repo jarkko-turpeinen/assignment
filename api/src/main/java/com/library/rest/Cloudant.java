@@ -7,7 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * IBM® Cloudant® NoSQL DB for IBM Cloud connector
+ * IBM Cloudant NoSQL DB for IBM Cloud connector
  */
 public final class Cloudant {
 
@@ -27,9 +27,9 @@ public final class Cloudant {
      * Tries to create client by bluemix VCAP credentials and if not found,
      * then by passed url, username and password values
      *
-     * @param url
-     * @param username
-     * @param password
+     * @param url database url
+     * @param username database username
+     * @param password password for database user
      * @return Database (null if no credentials or url, username and password)
      */
     public static Database getDatabase(String url, String username, String password){

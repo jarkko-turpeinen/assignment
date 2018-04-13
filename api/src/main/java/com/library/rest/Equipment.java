@@ -19,11 +19,11 @@ public final class Equipment {
     /**
      * IoT Equipment
      *
-     * @param equipmentNumber
-     * @param address
-     * @param contractStartDate
-     * @param contractEndDate
-     * @param status
+     * @param equipmentNumber Equipment identifying number
+     * @param address IP address
+     * @param contractStartDate Ansi date YYYY-MM-DD
+     * @param contractEndDate Ansi date YYYY-MM-DD
+     * @param status Running / Stopped
      */
     public Equipment(String equipmentNumber, String address, Date contractStartDate, Date contractEndDate, String status)  {
         this.equipmentNumber = equipmentNumber;
@@ -36,7 +36,7 @@ public final class Equipment {
     /**
      * Validates Equipment Number
      *
-     * @param equipmentNumber
+     * @param equipmentNumber Equipment identifying number
      * @return boolean
      */
     public static boolean isValidEquipmentNumber(String equipmentNumber) {
