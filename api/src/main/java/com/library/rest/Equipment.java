@@ -21,8 +21,8 @@ public final class Equipment {
      *
      * @param equipmentNumber Equipment identifying number
      * @param address IP address
-     * @param contractStartDate Ansi date YYYY-MM-DD
-     * @param contractEndDate Ansi date YYYY-MM-DD
+     * @param contractStartDate Equipment contract starting date
+     * @param contractEndDate Equipment contract ending date
      * @param status Running / Stopped
      */
     public Equipment(String equipmentNumber, String address, Date contractStartDate, Date contractEndDate, String status)  {
@@ -80,7 +80,7 @@ public final class Equipment {
     }
 
     /**
-     * IoT Equipment contract starting date
+     * IoT Equipment contract ending date
      *
      * @return Date
      */

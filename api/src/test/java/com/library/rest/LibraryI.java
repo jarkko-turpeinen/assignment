@@ -40,12 +40,13 @@ public class LibraryI {
             .range(1, Library.LIMIT_MAX + 1)
             .forEach(limit -> {
                 try {
-                    // To avoid following exception sleep a few milliseconds
+                    // To avoid following exception, sleep a few milliseconds
                     // Error: too_many_requests.
                     // Reason: You've exceeded your current limit of 5 requests per second for query class. Please try later..
                     Thread.sleep(250);
-                    assertThat("getEquipments by limit", library.getEquipments(limit), is(200));
+                    assertThat("getEquipments by limit", library.getEquipments(limit).size() <= limit , is(true));
                 } catch (Exception e) {
+                    Logger.debug("getEquipments: " + e.getMessage());
                     throw new RuntimeException(e);
                 }
             });

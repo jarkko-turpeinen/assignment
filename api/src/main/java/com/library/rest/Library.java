@@ -21,12 +21,11 @@ public final class Library extends Application {
     public final static String INVALID_EQUIPMENT_NUMBER = "Parameter Equipment Number is invalid";
     public final static String INVALID_LIMIT = "Parameter Limit is invalid";
     public final static String INVALID_EQUIPMENT = "Parameter Equipment is invalid";
+    public final static String NO_DATABASE_CONNECTION = "no database connection";
 
     private final static String URL = "https://28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix:e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2@28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix.cloudant.com";
     private final static String UID = "28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix";
     private final static String PWD = "e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2";
-
-    Database db = getDatabase(URL, UID, PWD);
 
     /**
      * User invokes a GET request from a REST URL to search Equipment
@@ -35,14 +34,8 @@ public final class Library extends Application {
      * Example GET URL: http://ServerName/applicationName/equipment/{equipmentNumber}
      *
      * @param equipmentNumber Equipment identifying number
-     * @return JSON object
-     *  Equipment in result consists of following attributes:
-     *  Equipment Number
-     *  Address
-     *  Contract Start Date
-     *  Contract End Date
-     *  Status (Running or Stopped)
-     * @throws Exception Invalid parameter
+     * @return List of Equipment documents
+     * @throws Exception Invalid Equipment Number parameter or CouchDB exception
      */
     @GET
     @Path("/equipment/{equipmentNumber}")
@@ -52,6 +45,7 @@ public final class Library extends Application {
         List<Equipment> result = null;
         try {
             validateParameterEquipmentNumber(equipmentNumber);
+            Database db = getDatabase(URL, UID, PWD);
             if (db != null) {
                 result =
                         db.query(
@@ -60,10 +54,12 @@ public final class Library extends Application {
                                         .build()
                                 , Equipment.class
                         ).getDocs();
+            } else {
+                throw new Exception(NO_DATABASE_CONNECTION);
             }
         } catch (Exception e) {
             Logger.error(e.getMessage());
-            throw new Exception("getEquipment: " + e);
+            throw new Exception("getEquipment: " + e.getMessage());
         }
         return result;
     }
@@ -82,25 +78,19 @@ public final class Library extends Application {
      * Example GET URL: http://ServerName/applicationName/equipment/search?limit={X}
      *
      * @param limit number of records to fetch
-     * @return JSON object of Equipments
-     *  Each Equipment in result consists of following attributes:
-     *  Equipment Number
-     *  Address
-     *  Contract Start Date
-     *  Contract End Date
-     *  Status (Running or Stopped)
-     *
-     * @throws Exception Invalid parameter
+     * @return List of Equipment documents
+     * @throws Exception Invalid parameter Limit or CouchDB exception
      */
     @GET
     @Path("/search")
     @PathParam("limit")
     @Produces({"application/json"})
-    public final Integer getEquipments(Integer limit) throws Exception {
+    public final List<Equipment> getEquipments(Integer limit) throws Exception {
         Logger.debug("getEquipments(" + limit + ")");
         List<Equipment> result = null;
         try {
           validateParameterLimit(limit);
+          Database db = getDatabase(URL, UID, PWD);
           if (db != null) {
               result =
                       db.query(
@@ -110,13 +100,14 @@ public final class Library extends Application {
                                       .build()
                               , Equipment.class
                       ).getDocs();
+          } else {
+              throw new Exception(NO_DATABASE_CONNECTION);
           }
         } catch (Exception e) {
             Logger.error(e.getMessage());
             throw new Exception("getEquipments: " + e.getMessage());
         }
-        result.forEach(e -> Logger.debug(e.toString()));
-        return 200;
+        return result;
     }
 
     private static void validateParameterLimit(Integer limit) throws Exception {
@@ -132,28 +123,27 @@ public final class Library extends Application {
      * API validates the input and generates error for duplicate Equipment
      *
      * @param equipment Equipment identifying number
-     *  Equipment consists of following attributes:
-     *  Equipment Number
-     *  Address
-     *  Contract Start Date
-     *  Contract End Date
-     *  Status (Running or Stopped)
-     * @return http code
-     * @throws Exception Invalid parameter
+     * @return Saved Equipmet document
+     * @throws Exception Invalid parameter Equipment or CouchDB exception
      */
     @POST
     @Path("/equipment")
     @Consumes({"application/json"})
-    public final Integer postEquipment(Equipment equipment) throws Exception {
+    public final Equipment postEquipment(Equipment equipment) throws Exception {
         Logger.debug("postEquipment(" + equipment + ")");
         try {
             validateParameterEquipment(equipment);
-            db.save(equipment);
+            Database db = getDatabase(URL, UID, PWD);
+            if (db != null) {
+                db.save(equipment);
+            } else {
+                throw new Exception(NO_DATABASE_CONNECTION);
+            }
         } catch (Exception e) {
             Logger.error(e.getMessage());
-            throw new Exception("putEquipment: " + e.getMessage());
+            throw new Exception("postEquipment: " + e.getMessage());
         }
-        return 200;
+        return getEquipment(equipment.getEquipmentNumber()).get(0);
     }
 
     private static void validateParameterEquipment(Equipment equipment) throws Exception {
