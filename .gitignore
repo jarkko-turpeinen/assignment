@@ -1,6 +1,8 @@
 *.iml
+gradle/*
 .gradle/*
 .idea/*
+api/gradle/*
 api/.gradle/*
 api/build/*
 api/out/*
