@@ -17,11 +17,20 @@ version '0.1.0'
 apply plugin: 'java'
 apply plugin: 'liberty'
 apply plugin: 'war'
+apply plugin: 'idea'
+
+idea {
+    module {
+        testSourceDirs += file('src/integration-test/java')
+        testSourceDirs += file('src/integration-test/resources')
+    }
+}
 
 liberty {
     configDirectory = file('src/main/liberty/config')
     server {
         name = 'DevServer'
+
         deploy {
             file = file('build/libs/api-${version}.war')
         }
