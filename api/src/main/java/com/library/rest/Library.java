@@ -27,13 +27,6 @@ public final class Library extends Application {
     public final static String invalidLimit = "Parameter Limit is invalid";
     public final static String invalidEquipment = "Parameter Equipment is invalid";
 
-    private static Database getCloudantDatabase() throws Exception {
-        final String url = "https://28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix.cloudant.com";
-        final String uid = "28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix";
-        final String pwd = "e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2";
-        return getDatabase(url, uid, pwd);
-    }
-
     /**
      * User invokes a GET request from a REST URL to search Equipment
      * that is based on one unique equipment number
@@ -52,7 +45,7 @@ public final class Library extends Application {
         List<Equipment> result = null;
         try {
             validateParameterEquipmentNumber(equipmentNumber);
-            final Database db = getCloudantDatabase();
+            final Database db = getDatabase();
             if (db != null) {
                 result =
                         db.query(
@@ -95,7 +88,7 @@ public final class Library extends Application {
         List<Equipment> result = null;
         try {
           validateParameterLimit(limit);
-          final Database db = getCloudantDatabase();
+          final Database db = getDatabase();
           if (db != null) {
               result = db.getAllDocsRequestBuilder()
                       .includeDocs(true)
@@ -135,7 +128,7 @@ public final class Library extends Application {
         Logger.debug("postEquipment(" + equipment + ")");
         try {
             validateParameterEquipment(equipment);
-            final Database db = getCloudantDatabase();
+            final Database db = getDatabase();
             db.save(equipment);
         } catch (Exception e) {
             Logger.error(e.getMessage());
