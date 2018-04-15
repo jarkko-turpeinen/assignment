@@ -1,4 +1,8 @@
 # assignment
+https://circleci.com/gh/:owner/:repo.png?circle-token=:circle-token
+
+https://circleci.com/gh/:owner/:repo.svg?style=shield&circle-token=:circle-token
+<p>
 <b>IoT Assingment</b>
 
 Create IBM IoT Bluemix free account to implement the use cases.<p/> Use IBM liberty Java or Node JS Runtime to implement Use case 1,2 and 3 Create test data in IBM Cloudant to demonstrate usecase 1, 2 and 3.<p/> Please implement the code and do not use any code generation tools to do the assingment.<br/>
