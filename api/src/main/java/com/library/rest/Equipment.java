@@ -1,5 +1,6 @@
 package com.library.rest;
 
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 
 /**
@@ -17,7 +18,7 @@ public final class Equipment {
     public Equipment() {}
 
     /**
-     * IoT Equipment
+     * IoT Equipment document
      *
      * @param equipmentNumber Equipment identifying number
      * @param address IP address
@@ -48,6 +49,7 @@ public final class Equipment {
      *
      * @return boolean
      */
+    @XmlTransient
     public final boolean isValid() {
         return isValidEquipmentNumber(this.equipmentNumber);
     }
