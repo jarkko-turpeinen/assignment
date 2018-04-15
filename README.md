@@ -1,5 +1,4 @@
-# assignment
-https://circleci.com/gh/jarkko-turpeinen/assignment/tree/master.png?style=shield&circle-token=9ce628cdd62160c976c090844253af34fd2c2822
+# assignment [![Circle CI](https://circleci.com/gh/jarkko-turpeinen/assignment/tree/master.png?style=shield&circle-token=9ce628cdd62160c976c090844253af34fd2c2822)]
 <p>
 <b>IoT Assingment</b>
 
