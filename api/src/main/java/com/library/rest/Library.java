@@ -30,6 +30,7 @@ public final class Library extends Application {
     public final static String invalidEquipmentNumber = "Parameter EquipmentNumber is invalid";
     public final static String invalidLimit = "Parameter Limit is invalid";
     public final static String invalidEquipment = "Parameter Equipment is invalid";
+    public final static String duplicatedEquipment = "Duplicate Equipment Number";
 
     /**
      * User invokes a GET request from a REST URL to search Equipment
@@ -134,7 +135,22 @@ public final class Library extends Application {
         try {
             validateParameterEquipment(equipment);
             final Database db = getDatabase();
-            db.save(equipment);
+            if (db != null) {
+                if (equipment.get_id() != null) {
+                    Logger.debug("update");
+                    db.update(equipment);
+                } else {
+                    Logger.debug("save");
+                    getEquipment(equipment.getEquipmentNumber()).forEach(
+                            savedEquipment -> {
+                                if (savedEquipment.getEquipmentNumber().equals(equipment.getEquipmentNumber())) {
+                                    throw new RuntimeException(new Exception(duplicatedEquipment));
+                                }
+                            }
+                    );
+                    db.save(equipment);
+                }
+            }
         } catch (Exception e) {
             Logger.error(e.getMessage());
             throw new Exception("postEquipment: " + e.getMessage());
@@ -145,6 +161,29 @@ public final class Library extends Application {
     private static void validateParameterEquipment(Equipment equipment) throws Exception {
         if (equipment == null || !equipment.isValid()) {
             throw new Exception(invalidEquipment);
+        }
+    }
+
+    /**
+     * Not a REST endpoint, Used only in intergation testing!
+     *
+     * @param equipment
+     * @throws Exception
+     */
+    public final void removeEquipment(Equipment equipment) throws Exception {
+        Logger.debug("removeEquipment(" + equipment + ")");
+        try {
+            validateParameterEquipment(equipment);
+            final Database db = getDatabase();
+            if (db != null) {
+                List<Equipment> result = getEquipment(equipment.getEquipmentNumber());
+                if (result.size() == 1) {
+                    db.remove(result.get(0));
+                }
+            }
+        } catch (Exception e) {
+            Logger.error(e.getMessage());
+            throw new Exception("removeEquipment: " + e.getMessage());
         }
     }
 }

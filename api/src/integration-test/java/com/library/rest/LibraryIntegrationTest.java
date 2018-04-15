@@ -1,29 +1,63 @@
 package com.library.rest;
 
-import com.cloudant.client.api.Database;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.Rule;
 import java.util.stream.IntStream;
-import static com.library.rest.Cloudant.getDatabase;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import org.junit.rules.ExpectedException;
 
 /**
  * Integration tests for Library
  */
 public class LibraryIntegrationTest {
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     Library library = new Library();
+
+    final Equipment testEquipment1 = new Equipment("1000000001", null, null, null, null);
+    final Equipment testEquipment2 = new Equipment("1000000002", null, null, null, null);
+
+    @Before
+    public void before() {
+        try {
+            Equipment equipment = library.postEquipment(testEquipment1);
+        } catch (Exception e) {
+            Logger.error(e.getMessage());
+        }
+    }
+
+    @After
+    public void after() {
+        try {
+            library.removeEquipment(testEquipment1);
+            library.removeEquipment(testEquipment2);
+        } catch (Exception e) {
+            Logger.error(e.getMessage());
+        }
+    }
+
+    @Test
+    public void postEquipment_duplicate() throws Exception {
+        thrown.expect(Exception.class);
+        thrown.expectMessage(Library.duplicatedEquipment);
+        library.postEquipment(new Equipment(testEquipment1.getEquipmentNumber(),null,null,null,null));
+    }
 
     @Test
     public void postEquipment()throws Exception {
-        Equipment equipment = library.postEquipment(new Equipment("1000000003", "127.0.0.1", null, null, "Stopped"));
-        assertThat("getEquipment result", equipment.getEquipmentNumber(), is("1000000003"));
+        Equipment equipment = library.postEquipment(testEquipment2);
+        assertThat("getEquipment result", equipment.getEquipmentNumber(), is(testEquipment2.getEquipmentNumber()));
     }
 
     @Test
     public void getEquipment() throws Exception {
-        final Equipment equipment = library.getEquipment("1000000001").get(0);
-        assertThat("getEquipment result", equipment.getEquipmentNumber(), is("1000000001"));
+        final Equipment equipment = library.getEquipment(testEquipment1.getEquipmentNumber()).get(0);
+        assertThat("getEquipment result", equipment.getEquipmentNumber(), is(testEquipment1.getEquipmentNumber()));
     }
 
     /**
