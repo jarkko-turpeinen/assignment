@@ -26,7 +26,7 @@ public final class Cloudant {
     /**
      * Creates Cloudant client object to return database object
      *
-     * Tries to create client by bluemix VCAP credentials and if not found,
+     * Tries to create client by bluemix VCAP_SERVICES credentials and if not found,
      * then by passed url, username and password values
      *
      * @param url database url
@@ -42,7 +42,7 @@ public final class Cloudant {
         try {
             // Credentials for database
             {
-                final String credentials = System.getProperty("VCAP_METADATA");
+                final String credentials = System.getenv("VCAP_SERVICES");
                 if (credentials != null) {
                     Logger.debug("IBM Cloudant NoSQL DB for IBM Cloud");
                     client = ClientBuilder.bluemix(credentials).build();
