@@ -1,7 +1,5 @@
 # assignment
-https://circleci.com/gh/:owner/:repo.png?circle-token=:circle-token
-
-https://circleci.com/gh/:owner/:repo.svg?style=shield&circle-token=:circle-token
+<img href="https://circleci.com/gh/:owner/:repo.svg?style=shield&circle-token=:circle-token"/>
 <p>
 <b>IoT Assingment</b>
 
