@@ -9,10 +9,14 @@ import static com.cloudant.client.api.query.Expression.*;
 import static com.library.rest.Cloudant.getDatabase;
 
 /**
- * REST Service for IOT Equipment metadata maintenance in IBM Cloudant NoSQL DB for IBM Cloud
+ * REST Service assigment-app for IOT Equipment metadata maintenance in IBM Cloudant NoSQL DB for IBM Cloud
+ *
+ * GET /assigment-app/equipment/{equipmentNumber}
+ * GET /assigment-app/equipment/search?limit={[1-10]}
+ * POST /assigment-app/equipment/{equipmentDocument}
  */
-@ApplicationPath("api")
-@Path("library")
+@ApplicationPath("assigment-app")
+@Path("/equipment")
 public final class Library extends Application {
 
     /**
@@ -38,9 +42,9 @@ public final class Library extends Application {
      * @throws Exception Invalid Equipment Number parameter or CouchDB exception
      */
     @GET
-    @Path("/equipment/{equipmentNumber}")
+    @Path("/{equipmentNumber}")
     @Produces({"application/json"})
-    public final List<Equipment> getEquipment(String equipmentNumber) throws Exception {
+    public final List<Equipment> getEquipment(@PathParam("equipmentNumber") String equipmentNumber) throws Exception {
         Logger.debug("getEquipment(" + equipmentNumber + ")");
         List<Equipment> result = null;
         try {
@@ -81,9 +85,9 @@ public final class Library extends Application {
      */
     @GET
     @Path("/search")
-    @PathParam("limit")
+    @QueryParam("limit")
     @Produces({"application/json"})
-    public final List<Equipment> getEquipments(Integer limit) throws Exception {
+    public final List<Equipment> getEquipments(@QueryParam("limit") Integer limit) throws Exception {
         Logger.debug("getEquipments(" + limit + ")");
         List<Equipment> result = null;
         try {
@@ -122,8 +126,9 @@ public final class Library extends Application {
      * @throws Exception Invalid parameter Equipment or CouchDB exception
      */
     @POST
-    @Path("/equipment")
-    @Consumes({"application/json"})
+    @Path("/")
+    @Produces("application/json")
+    @Consumes("application/json")
     public final Equipment postEquipment(Equipment equipment) throws Exception {
         Logger.debug("postEquipment(" + equipment + ")");
         try {

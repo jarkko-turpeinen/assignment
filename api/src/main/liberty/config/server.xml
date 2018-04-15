@@ -1,0 +1,11 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.0</feature>
+    </featureManager>
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="8001">
+        <tcpOptions soReuseAddr="true"/>
+    </httpEndpoint>
+    <application name="assignment-app" context-root="/" location="${app.location}" type="war"/>
+</server>
