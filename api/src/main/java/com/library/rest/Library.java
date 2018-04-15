@@ -17,20 +17,20 @@ public final class Library extends Application {
     /**
      * Maximum number of Equipments to return
      */
-    public final static Integer LIMIT_MAX = 10;
+    public final static Integer limitMax = 10;
 
     /**
      * Validation exceptions
      */
-    public final static String INVALID_EQUIPMENT_NUMBER = "Parameter Equipment Number is invalid";
-    public final static String INVALID_LIMIT = "Parameter Limit is invalid";
-    public final static String INVALID_EQUIPMENT = "Parameter Equipment is invalid";
+    public final static String invalidEquipmentNumber = "Parameter EquipmentNumber is invalid";
+    public final static String invalidLimit = "Parameter Limit is invalid";
+    public final static String invalidEquipment = "Parameter Equipment is invalid";
 
     private static Database getCloudantDatabase() throws Exception {
-        final String URL = "https://28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix.cloudant.com";
-        final String UID = "28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix";
-        final String PWD = "e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2";
-        return getDatabase(URL, UID, PWD);
+        final String url = "https://28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix.cloudant.com";
+        final String uid = "28ce2e3f-3a11-428f-a4bb-29ae06964348-bluemix";
+        final String pwd = "e7ee215c4a9c5ebf83cad005f7f43d104d7d7cf7ea167974441eaa79534703c2";
+        return getDatabase(url, uid, pwd);
     }
 
     /**
@@ -51,12 +51,12 @@ public final class Library extends Application {
         List<Equipment> result = null;
         try {
             validateParameterEquipmentNumber(equipmentNumber);
-            Database db = getCloudantDatabase();
+            final Database db = getCloudantDatabase();
             if (db != null) {
                 result =
                         db.query(
                                 new QueryBuilder(eq("equipmentNumber", equipmentNumber))
-                                        .limit(LIMIT_MAX)
+                                        .limit(limitMax)
                                         .build()
                                 , Equipment.class
                         ).getDocs();
@@ -70,7 +70,7 @@ public final class Library extends Application {
 
     private final void validateParameterEquipmentNumber(String equipmentNumber) throws Exception {
         if (equipmentNumber == null || !Equipment.isValidEquipmentNumber(equipmentNumber)) {
-            throw new Exception(INVALID_EQUIPMENT_NUMBER);
+            throw new Exception(invalidEquipmentNumber);
         }
     }
 
@@ -94,7 +94,7 @@ public final class Library extends Application {
         List<Equipment> result = null;
         try {
           validateParameterLimit(limit);
-          Database db = getCloudantDatabase();
+          final Database db = getCloudantDatabase();
           if (db != null) {
               result =
                       db.query(
@@ -113,8 +113,8 @@ public final class Library extends Application {
     }
 
     private static void validateParameterLimit(Integer limit) throws Exception {
-        if (limit == null || limit < 1 | limit > LIMIT_MAX) {
-            throw new Exception(INVALID_LIMIT);
+        if (limit == null || limit < 1 | limit > limitMax) {
+            throw new Exception(invalidLimit);
         }
     }
 
@@ -135,7 +135,7 @@ public final class Library extends Application {
         Logger.debug("postEquipment(" + equipment + ")");
         try {
             validateParameterEquipment(equipment);
-            Database db = getCloudantDatabase();
+            final Database db = getCloudantDatabase();
             db.save(equipment);
         } catch (Exception e) {
             Logger.error(e.getMessage());
@@ -146,7 +146,7 @@ public final class Library extends Application {
 
     private static void validateParameterEquipment(Equipment equipment) throws Exception {
         if (equipment == null || !equipment.isValid()) {
-            throw new Exception(INVALID_EQUIPMENT);
+            throw new Exception(invalidEquipment);
         }
     }
 }

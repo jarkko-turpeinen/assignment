@@ -32,7 +32,7 @@ public class LibraryI {
     @Test
     public void getEquipments() throws Exception {
         IntStream
-            .range(1, Library.LIMIT_MAX + 1)
+            .range(1, Library.limitMax + 1)
             .forEach(limit -> {
                 try {
                     // To avoid following exception, sleep a few milliseconds

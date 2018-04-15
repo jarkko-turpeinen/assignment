@@ -11,7 +11,7 @@ import java.net.URL;
  */
 public final class Cloudant {
 
-    public final static String NO_DATABASE_AVAILABLE = "No database available";
+    public final static String noDatabaseAvailable = "No database available";
 
     private static URL getUrlObject(String url) throws Exception {
         URL urlObject = null;
@@ -33,7 +33,7 @@ public final class Cloudant {
      * @param username database username
      * @param password password for database user
      * @return Database (null if no Cloud credentials or url, username and password)
-     * @throws No database available
+     * @throws Exception Exception No database available
      */
     public static Database getDatabase(String url, String username, String password) throws Exception {
         Logger.debug("getDatabase");
@@ -64,7 +64,7 @@ public final class Cloudant {
             }
         } catch (Exception e) {
             Logger.error(e.getMessage());
-            throw new Exception(NO_DATABASE_AVAILABLE);
+            throw new Exception(noDatabaseAvailable);
         }
         return database;
     }
