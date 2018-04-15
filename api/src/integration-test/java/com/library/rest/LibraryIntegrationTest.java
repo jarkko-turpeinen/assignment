@@ -10,7 +10,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Integration tests for Library
  */
-public class LibraryI {
+public class LibraryIntegrationTest {
 
     Library library = new Library();
 

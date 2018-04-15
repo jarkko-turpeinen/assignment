@@ -7,7 +7,7 @@ import org.junit.rules.ExpectedException;
 /**
  * Unit tests for Library
  */
-public class LibraryU {
+public class LibraryTest {
 
     Library library = new Library();
 
