@@ -41,7 +41,7 @@ curl http://assignment-app.eu-gb.mybluemix.net/assigment-app/equipment/ -H "Cont
 <p/>
 <i>GET search by equipment number</i>
 <br/>
-http://assignment-app.eu-gb.mybluemix.net/assigment-app/equipment/10000000123
+http://assignment-app.eu-gb.mybluemix.net/assigment-app/equipment/1000000123
 <p/>
 <i>GET list 10 equipments</i>
 <br/>
