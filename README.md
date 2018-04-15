@@ -26,4 +26,25 @@ cf push
 <b>Bind Application to Cloudant service</b>
 <br/>
 cf bs assignment-app cloudant-service
+</br>
 cf restage assignment-app
+<p/>
+<b>Application endpoint url</b>
+<br/>
+http://assignment-app.eu-gb.mybluemix.net/assigment-app
+<p/>
+<b>Examples</b>
+<p/>
+<i>POST</i>
+<br/>
+curl http://assignment-app.eu-gb.mybluemix.net/assigment-app/equipment/ -H "Content-Type: application/json" -d "{\"equipmentNumber\":\"1000000123\"}"
+<p/>
+<i>GET search by equipment number</i>
+<br/>
+http://assignment-app.eu-gb.mybluemix.net/assigment-app/equipment/10000000123
+<p/>
+<i>GET list 10 equipments</i>
+<br/>
+http://assignment-app.eu-gb.mybluemix.net/assigment-app/equipment/search?limit=10
+<br/>
+

@@ -8,7 +8,6 @@ import java.text.DateFormat;
 public final class Logger {
 
     private static void writeLog(String details) {
-        System.out.print("<" + DateFormat.getDateTimeInstance().format(System.currentTimeMillis()) + "> ");
         System.out.println(details);
     }
 

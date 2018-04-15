@@ -1,0 +1,7 @@
+---
+applications:
+ - name: assignment-app
+   random-route: false
+   path: api/build/libs/api-0.1.0.war
+   memory: 256M
+   instances: 1
