@@ -11,7 +11,8 @@ import static com.library.rest.Cloudant.getDatabase;
 /**
  * REST Service for IOT Equipment metadata maintenance in IBM Cloudant NoSQL DB for IBM Cloud
  */
-@ApplicationPath("equipment")
+@ApplicationPath("api")
+@Path("library")
 public final class Library extends Application {
 
     /**
@@ -96,14 +97,13 @@ public final class Library extends Application {
           validateParameterLimit(limit);
           final Database db = getCloudantDatabase();
           if (db != null) {
-              result =
-                      db.query(
-                              new QueryBuilder(ne("equipmentNumber", "null"))
-                                      //.sort(Sort.asc("equipmentNumber")) // TODO index equipmentNumber for sorting
-                                      .limit(limit)
-                                      .build()
-                              , Equipment.class
-                      ).getDocs();
+              result = db.getAllDocsRequestBuilder()
+                      .includeDocs(true)
+                      //.sort(Sort.asc("equipmentNumber")) // TODO index equipmentNumber for sorting
+                      .limit(limit)
+                      .build()
+                      .getResponse()
+                      .getDocsAs(Equipment.class);
           }
         } catch (Exception e) {
             Logger.error(e.getMessage());
