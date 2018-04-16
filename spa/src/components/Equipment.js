@@ -9,7 +9,7 @@ const Equipment = props => {
             <Card>
                 <CardBody>
                     <CardTitle>Eqipments</CardTitle>
-                    <CardText>Save and search equipments</CardText>
+                    <CardText>Search & Save equipments</CardText>
                     <EquimentForm/>
                 </CardBody>
             </Card>

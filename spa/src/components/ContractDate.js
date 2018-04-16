@@ -1,7 +1,6 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
-import * as moment from 'moment';
-import 'moment/locale/fi'
+import moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker.css';
 

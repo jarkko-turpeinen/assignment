@@ -2,59 +2,51 @@ import React from 'react';
 import { Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import EquipmentList from './EquipmentList'
 import ContractDate from './ContractDate'
+import Equipments from './../containers/Equipments'
 
 export default class EquipmentForm extends React.Component {
+
   render() {
     return (
       <Form>
         <FormGroup row>
-          <Label for="equipmentNumber" sm={2}>Equipment Number</Label>
-          <Col sm={2}>
+          <Label sm={4} for="equipmentNumber">Equipment Number</Label>
+          <Col>
             <Input type="text" id="equipmentNumber" />
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label for="constractStartDate" sm={2}>Contract Start Date</Label>
-          <Col sm={2}>
+          <Label sm={4} for="constractStartDate">Contract Start Date</Label>
+          <Col>
             <ContractDate id="constractStartDate" />
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label for="constractEndDate" sm={2}>Contract End Date</Label>
-          <Col sm={2}>
+          <Label sm={4} for="constractEndDate">Contract End Date</Label>
+          <Col>
             <ContractDate id="constractEndDate" />
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label for="address" sm={2}>IP Address</Label>
-          <Col sm={2}>
+          <Label sm={4} for="address">IP Address</Label>
+          <Col>
             <Input type="text" id="address" />
           </Col>
         </FormGroup>
-        <FormGroup tag="fieldset" row>
-          <legend className="col-form-label col-sm-2">Status</legend>
-          <Col sm={2}>
-            <FormGroup check>
-              <Label check>
-                <Input type="radio" name="status" />{' '}
-                Running
-              </Label>
-            </FormGroup>
-            <FormGroup check>
-              <Label check>
-                <Input type="radio" name="status" />{' '}
-                Stopped
-              </Label>
-            </FormGroup>
+        <FormGroup row>
+        <Label sm={4} for="status">Status</Label>
+          <Col>
+            <Input disabled type="text" id="status" />
           </Col>
         </FormGroup>
         <FormGroup check row>
-          <Col sm={{ size: 2, offset: 2 }}>
+          <Col sm={{ offset: 4 }}>
+            <Button>Search</Button>
             <Button>Save</Button>
           </Col>
         </FormGroup>
         <FormGroup>
-            <EquipmentList/>
+            <EquipmentList list={Equipments}/>
         </FormGroup>
       </Form>      
     );
