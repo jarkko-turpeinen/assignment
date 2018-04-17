@@ -2,6 +2,7 @@ import React from 'react';
 import { Collapse, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import ContractDate from './ContractDate'
 import EquipmentList from './../containers/EquipmentList'
+import axios from 'axios'
 
 export default class EquipmentForm extends React.Component {
 
@@ -71,20 +72,31 @@ export default class EquipmentForm extends React.Component {
    */
   chattyStatus(text) {
     this.setState({status: text})
-    window.setTimeout(
+      let firstStage = 'Humble to serve you!'
+      let secondStage = 'Having a break? I\'ll load quote of the day for you!' 
+      window.setTimeout(
         () => {
-          if (this.state.status === text) // previous status has not changed 
-            this.setState({status: 'Humbly waiting for your action!'})
+          if (this.state.status === text) // status has not changed 
+            this.setState({status: firstStage})
           else return
           window.setTimeout(
             () => {
-              if (this.state.status === 'Humbly waiting for your action!') 
-                this.setState({status: 'Hey I\'ll soon hibernate!'})
+              if (this.state.status === firstStage) 
+                this.setState({status: secondStage})
               else return 
               window.setTimeout(
                 () => {
-                  if (this.state.status === 'Hey I\'ll soon hibernate!') 
-                    this.setState({status: 'Zzz...'})
+                  if (this.state.status === secondStage) {
+                    axios.get('http://quotes.rest/qod.json?category=inspire')
+                      .then(response => {
+                        let quoteOfTheDay = response.data.contents.quotes[0]
+                        this.setState(
+                          {
+                            status: quoteOfTheDay.quote + ' - [' + quoteOfTheDay.author + ']' 
+                          }
+                        );
+                      })
+                  } 
                 }, 15000
               )
             }, 15000
@@ -136,7 +148,7 @@ export default class EquipmentForm extends React.Component {
       cancel: true
     });
     // on promise
-    this.chattyStatus('Please fill the blanks and hit Save! Or just Cancel if you changed your mind!')
+    this.chattyStatus('Please fill the blanks and hit Save! Or just Cancel if you change your mind!')
   }
 
   handleCancel() {
