@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './../assets/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, CardText, CardBody, CardTitle } from 'reactstrap';
-import EquipmentForm from '../components/EquipmentForm'
+import EquipmentForm from './../containers/EquipmentForm'
 
 class App extends Component {
   render() {
@@ -10,8 +10,8 @@ class App extends Component {
       <div className="App">
         <Card>
             <CardBody>
-                <CardTitle>Eqipments</CardTitle>
-                <CardText>Search & Save equipments</CardText>
+                <CardTitle>IoT Equipments</CardTitle>
+                <CardText>Search & Save IoT equipments</CardText>
                 <EquipmentForm/>
             </CardBody>
         </Card>

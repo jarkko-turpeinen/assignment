@@ -17,13 +17,15 @@ const EquipmentList = props => {
             </tr>
           </thead>
           <tbody>
-              <tr>
-                <th scope="row">1000000001</th>
-                <td>2018-04-16</td>
-                <td>2023-04-15</td>
-                <td>127.0.0.1</td>
-                <td>Running</td>
-              </tr>
+          {props.equipments.map(equipment =>
+            <tr key={equipment._id} >
+              <th scope="row">{equipment.equipmentNumber}</th>
+              <td>{equipment.contractStartDate}</td>
+              <td>{equipment.contractEndDate}</td>
+              <td>{equipment.address}</td>
+              <td>{equipment.status}</td>
+            </tr>
+          )}
           </tbody>
         </Table>  
         </CardBody>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Collapse, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import ContractDate from './ContractDate'
-import EquipmentList from './../containers/EquipmentList'
+import ContractDate from './../components/ContractDate'
+import EquipmentList from './../components/EquipmentList'
 import axios from 'axios'
 
 export default class EquipmentForm extends React.Component {
@@ -20,9 +20,9 @@ export default class EquipmentForm extends React.Component {
       seacrh: true, 
       save: false, 
       new: true, 
-      cancel: false, 
-      result: 0,
-      status: 'Good day!'
+      cancel: false,
+      status: 'Good day! Type seach criteria and hit Enter!',
+      result: []
     }
   }
 
@@ -56,8 +56,8 @@ export default class EquipmentForm extends React.Component {
 
   onEntered() {
     this.chattyStatus(
-      this.state.result > 0 ?
-        'Found ' + this.state.result + ' equipments. Edit equipment by clicking its Number link!' 
+      this.state.result.length > 0 ?
+        'Found ' + this.state.result.length + ' equipment(s). Edit equipment by clicking its Number link!' 
           : 'No results, please change search criteria and try again!'
     )
   }
@@ -105,7 +105,8 @@ export default class EquipmentForm extends React.Component {
     )
   }
 
-  handleSearch() {
+  handleSearch(event) {
+    event.preventDefault()    
     this.setState({ 
       collapse: false,
       status: 'Searching...', 
@@ -113,21 +114,42 @@ export default class EquipmentForm extends React.Component {
       save: false, 
       new: false, 
       cancel: false,
-      result: 10
+      result: this.state.result
     });
-    // on promise
-    window.setTimeout(() => {
-      this.setState({ 
-        collapse: true,
-        status: 'Done!', 
-        seacrh: true, 
-        save: false, 
-        new: true, 
-        cancel: false
-      })}, 5000)
+    // demo
+    window.setTimeout(
+      () => {
+        this.setState({
+          collapse: true,
+          seacrh: true, 
+          save: false, 
+          new: true, 
+          cancel: false,
+          result: [{ _id: 1, equipmentNumber: '1000000001', contractStartDate: '', status: 'Running'}]
+        })
+    }, 2000)
+    
+    /* Fix CORS
+    axios.get('http://localhost:8001/assigment-app/equipment/1000000001')
+      .then(response => {
+        console.log(response)
+        JSON.parse(response)  
+      })
+      .then(JSON => {
+        this.setState({
+          result: JSON,
+          collapse: true,
+          seacrh: true, 
+          save: false, 
+          new: true, 
+          cancel: false
+          })
+      })
+      */
   }
 
-  handleSave() {
+  handleSave(event) {
+    event.preventDefault()    
     this.setState({ 
       status: 'Saving...', 
       seacrh: true, 
@@ -147,12 +169,10 @@ export default class EquipmentForm extends React.Component {
       new: false, 
       cancel: true
     });
-    // on promise
-    this.chattyStatus('Please fill the blanks and hit Save! Or just Cancel if you change your mind!')
+    this.chattyStatus('Please fill the blanks and hit Enter to save or Esc to cancel!')
   }
 
   handleCancel() {
-    console.log("cancel")
     this.setState({
       seacrh: true, save: false, new: true, cancel: false
     });
@@ -162,11 +182,18 @@ export default class EquipmentForm extends React.Component {
   render() {
     return (
       <div>
-        <Form>
+        <Form onSubmit={ this.state.seacrh ? this.handleSearch : this.handleSave }
+          onKeyDown={
+            (event) => {
+              if (this.state.save & event.keyCode === 27) {
+                this.handleCancel()
+              }
+            }
+          }>
           <FormGroup row>
             <Label sm={4} for="equipmentNumber">Equipment Number</Label>
             <Col>
-              <Input autoFocus type="text" id="equipmentNumber" 
+              <Input autoFocus type="text" id="equipmentNumber"
                 maxLength="10" onChange={this.onChange} />
             </Col>
           </FormGroup>
@@ -201,13 +228,15 @@ export default class EquipmentForm extends React.Component {
           <FormGroup check row>
             <Col sm={{ offset: 4 }}>
               {this.state.seacrh && 
-                <Button onClick={this.handleSearch} >Search</Button>}
+                <Button color="primary" type="submit">Search</Button>}{' '}
               {this.state.new && 
-                <Button onClick={this.handleNew} >New</Button>}
+                <Button color="secondary" 
+                  onClick={this.handleNew}>New</Button>}{' '}
               {this.state.save && 
-                <Button onClick={this.handleSave} >Save</Button>}
+                <Button color="primary" type="submit">Save</Button>}{' '}
               {this.state.cancel && 
-                <Button onClick={this.handleCancel} >Cancel</Button>}
+                <Button color="secondary" 
+                  onClick={this.handleCancel} >Cancel</Button>}
             </Col>
           </FormGroup>
           <FormGroup>
@@ -218,7 +247,7 @@ export default class EquipmentForm extends React.Component {
               onExiting={this.onExiting}
               onExited={this.onExited}
             >
-              <EquipmentList/>
+              <EquipmentList equipments={this.state.result}/>
             </Collapse>            
           </FormGroup>
         </Form>
