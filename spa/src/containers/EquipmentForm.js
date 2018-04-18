@@ -16,7 +16,7 @@ export default class EquipmentForm extends React.Component {
     this.onChange = this.onChange.bind(this)
     this.editEquipment = this.editEquipment.bind(this)
     this.state = {
-      equipment: {_id: null, _rev: null, equipmentNumber: null, address: null, contractStartDate: null, contractEndDate: null, status: null},
+      equipment: {_id: '', _rev: '', equipmentNumber: '', address: '', contractStartDate: '', contractEndDate: '', status: ''},
       collapse: false, 
       seacrh: true, 
       save: false, 
@@ -91,14 +91,15 @@ export default class EquipmentForm extends React.Component {
       let secondStage = 'Having a break? I\'ll load quote of the day for you!' 
       window.setTimeout(
         () => {
-          if (this.state.status === text) // status has not changed 
+          if (this.state.status === text) {
+            // status has not changed 
             this.setState({status: firstStage})
-          else return
+          } else {return}
           window.setTimeout(
             () => {
-              if (this.state.status === firstStage) 
+              if (this.state.status === firstStage){ 
                 this.setState({status: secondStage})
-              else return 
+              } else {return} 
               window.setTimeout(
                 () => {
                   if (this.state.status === secondStage) {
@@ -142,10 +143,14 @@ export default class EquipmentForm extends React.Component {
     let search = async (equipmentNumber) => {
       try {
         let url = null
-        if (equipmentNumber) // return a document
+        if (equipmentNumber) {
+          // return a document
           url = process.env.REACT_APP_REST_ENDPOINT_EQUIPMENT + equipmentNumber
-        else // return random documents until hits the limit
+        } else {
+          // return random documents until hits the limit
           url = process.env.REACT_APP_REST_ENDPOINT_EQUIPMENT_LIMIT 
+        }
+        console.log(url)
         let response = await axios.get(url)
         this.setState({
           result: response.data,
@@ -237,8 +242,11 @@ export default class EquipmentForm extends React.Component {
    */
   editEquipment(event) {
     let equipment = this.state.result.find(
-      equipment => {return equipment._id = event.target.id
-    })
+      equipment => {
+        console.log(equipment)
+        return equipment._id = event.target.id
+      }
+    )
     this.setState({
       equipment: equipment,
       collapse: false, 
