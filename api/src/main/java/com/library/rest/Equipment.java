@@ -9,8 +9,8 @@ import java.util.Date;
 public final class Equipment {
     private String equipmentNumber;
     private String address;
-    private Date contractStartDate;
-    private Date contractEndDate;
+    private String contractStartDate;
+    private String contractEndDate;
     private String status;
     private String _id;
     private String _rev;
@@ -26,7 +26,7 @@ public final class Equipment {
      * @param contractEndDate Equipment contract ending date
      * @param status Running / Stopped
      */
-    public Equipment(String equipmentNumber, String address, Date contractStartDate, Date contractEndDate, String status)  {
+    public Equipment(String equipmentNumber, String address, String contractStartDate, String contractEndDate, String status)  {
         this.equipmentNumber = equipmentNumber;
         this.address = address;
         this.contractStartDate = contractStartDate;
@@ -75,18 +75,18 @@ public final class Equipment {
     /**
      * IoT Equipment constract starting date
      *
-     * @return Date
+     * @return String
      */
-    public Date getContractStartDate() {
+    public String getContractStartDate() {
         return contractStartDate;
     }
 
     /**
      * IoT Equipment contract ending date
      *
-     * @return Date
+     * @return String
      */
-    public Date getContractEndDate() {
+    public String getContractEndDate() {
         return contractEndDate;
     }
 
