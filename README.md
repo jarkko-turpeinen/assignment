@@ -30,9 +30,13 @@ cf bs assignment-app cloudant-service
 </br>
 cf restage assignment-app
 <p/>
-<b>Application endpoint url</b>
+<b>Application API endpoint</b>
 <br/>
 http://assignment-app.eu-gb.mybluemix.net/assigment-app
+<p/>
+<b>Application UI</b>
+<br/>
+http://assignment-app.eu-gb.mybluemix.net
 <p/>
 <b>Examples</b>
 <p/>

@@ -1,7 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom'
+import React from 'react'
 import { Collapse, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import ContractDate from './../components/ContractDate'
 import EquipmentList from './../components/EquipmentList'
 import axios from 'axios'
 
@@ -16,7 +14,9 @@ export default class EquipmentForm extends React.Component {
     this.onEntering = this.onEntering.bind(this)
     this.onEntered = this.onEntered.bind(this)
     this.onChange = this.onChange.bind(this)
-    this.state = {        
+    this.editEquipment = this.editEquipment.bind(this)
+    this.state = {
+      equipment: {_id: null, _rev: null, equipmentNumber: null, address: null, contractStartDate: null, contractEndDate: null, status: null},
       collapse: false, 
       seacrh: true, 
       save: false, 
@@ -27,8 +27,11 @@ export default class EquipmentForm extends React.Component {
     }
   }
 
+  /**
+   * Validates and gives feedback to user accordingly
+   * @param {target is form field for validation} target 
+   */
   validate(target) {
-    console.log(target.id)
     let result = ''
     switch (target.id) {
       case 'equipmentNumber':
@@ -49,12 +52,20 @@ export default class EquipmentForm extends React.Component {
     return result
   }
 
+  /**
+   * Result set is table inside Collapse object 
+   * and this is its event when it is collapsing
+   */
   onEntering() {
     this.setState({ 
       status: 'Listing equipments...' 
     });
   }
 
+  /**
+   * Result set is table inside Collapse object 
+   * and this is its event when it is collapsed
+   */
   onEntered() {
     this.chattyStatus(
       this.state.result.length > 0 ?
@@ -64,6 +75,9 @@ export default class EquipmentForm extends React.Component {
   }
 
   onChange(event) {
+    let change = this.state.equipment
+    change[event.target.id] = event.target.value
+    this.setState(change)
     this.chattyStatus(this.validate(event.target))
   }
 
@@ -106,6 +120,13 @@ export default class EquipmentForm extends React.Component {
     )
   }
 
+  /**
+   * Search button clicked or Enter key pressed on search mode.
+   * Searches by equipment number 
+   * or when it's null, searches random equipments 
+   * until it hits the limit.
+   * @param {onSubmit event that is prevented} event 
+   */
   handleSearch(event) {
     event.preventDefault()    
     this.setState({ 
@@ -120,12 +141,14 @@ export default class EquipmentForm extends React.Component {
     
     let search = async (equipmentNumber) => {
       try {
-        let url = process.env.REACT_APP_REST_ENDPOINT_EQUIPMENT + equipmentNumber
-        console.log(url)
+        let url = null
+        if (equipmentNumber) // return a document
+          url = process.env.REACT_APP_REST_ENDPOINT_EQUIPMENT + equipmentNumber
+        else // return random documents until hits the limit
+          url = process.env.REACT_APP_REST_ENDPOINT_EQUIPMENT_LIMIT 
         let response = await axios.get(url)
-        console.log(response)
         this.setState({
-          result: JSON.parse(response),
+          result: response.data,
           collapse: true,
           seacrh: true, 
           save: false, 
@@ -143,9 +166,14 @@ export default class EquipmentForm extends React.Component {
         cancel: false
       })
     }  
-    search(ReactDOM.findDOMNode(this.refs.equipmentNumber).value)
+    search(this.state.equipment.equipmentNumber)
   }
 
+  /**
+   * Save button clicked or Enter key pressed on new mode.
+   * Read form fields into equipment object and posts it to service
+   * @param {onSubmit event that is prevented} event 
+   */
   handleSave(event) {
     event.preventDefault()    
     this.setState({ 
@@ -155,12 +183,33 @@ export default class EquipmentForm extends React.Component {
       new: true, 
       cancel: false
     });
-    // on promise
-    this.chattyStatus('Saved successfully!')
+
+    let save = async () => {
+      try {
+        let url = process.env.REACT_APP_REST_ENDPOINT_EQUIPMENT
+        await axios.post(url, this.state.equipment)
+        this.setState({
+          result: [],
+          seacrh: true, 
+          save: false, 
+          new: true, 
+          cancel: false,
+          status: 'Saved successfully!'
+        })
+      } catch (error) {
+        console.log(error)
+        this.chattyStatus('Save failed because of an ' + error)
+      }
+    }
+    save()
   }
 
+  /**
+   * New equipment mode is just buttons state
+   */
   handleNew() {
     this.setState({
+      equipment: {_id: null, _rev: null, equipmentNumber: null, address: null, contractStartDate: null, contractEndDate: null, status: null},
       collapse: false, 
       seacrh: false, 
       save: true, 
@@ -170,11 +219,35 @@ export default class EquipmentForm extends React.Component {
     this.chattyStatus('Please fill the blanks and hit Enter to save or Esc to cancel!')
   }
 
+  /**
+   * Cancel editing mode by nulling _id and _rev 
+   * and resets buttons to default
+   */
   handleCancel() {
     this.setState({
-      seacrh: true, save: false, new: true, cancel: false
+      seacrh: true, save: false, new: true, cancel: false, _id: null, _rev: null
     });
     this.chattyStatus('Cancelled successfully!')
+  }
+
+  /**
+   * Editing mode is on when equipments Cloudant id and rev are known.
+   * In others words service then makes update instead of save.
+   * @param {td element that has _id and _rev in its id attribute} event 
+   */
+  editEquipment(event) {
+    let equipment = this.state.result.find(
+      equipment => {return equipment._id = event.target.id
+    })
+    this.setState({
+      equipment: equipment,
+      collapse: false, 
+      seacrh: false, 
+      save: true, 
+      new: false, 
+      cancel: true
+    });
+    this.chattyStatus('Edit and hit Enter to save or Esc to cancel!')
   }
 
   render() {
@@ -192,34 +265,46 @@ export default class EquipmentForm extends React.Component {
             <Label sm={4} for="equipmentNumber">Equipment Number</Label>
             <Col>
               <Input autoFocus type="text" id="equipmentNumber" ref="equipmentNumber"
-                maxLength="10" onChange={this.onChange} />
+                maxLength="10" onChange={this.onChange}
+                value={this.state.equipment.equipmentNumber}
+              />
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Label sm={4} for="constractStartDate">Contract Start Date</Label>
+            <Label sm={4} for="contractStartDate">Contract Start Date</Label>
             <Col>
-              <ContractDate id="constractStartDate" 
-                onChange={this.onChange} />
+              <Input id="contractStartDate" ref="contractStartDate" 
+                onChange={this.onChange} disabled={this.state.seacrh}
+                value={this.state.equipment.contractStartDate}
+              />
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Label sm={4} for="constractEndDate">Contract End Date</Label>
+            <Label sm={4} for="contractEndDate">Contract End Date</Label>
             <Col>
-              <ContractDate id="constractEndDate" 
-                onChange={this.onChange} />
+              <Input id="contractEndDate" ref="contractEndDate"
+                onChange={this.onChange} disabled={this.state.seacrh}
+                value={this.state.equipment.contractEndDate}                
+              />
             </Col>
           </FormGroup>
           <FormGroup row>
             <Label sm={4} for="address">IP Address</Label>
             <Col>
-              <Input type="text" id="address" 
-                maxLength="20" onChange={this.onChange} />
+              <Input type="text" id="address" ref="address"
+                maxLength="20" onChange={this.onChange} 
+                disabled={this.state.seacrh}
+                value={this.state.equipment.address}
+              />
             </Col>
           </FormGroup>
           <FormGroup row>
           <Label sm={4} for="status">Status</Label>
             <Col>
-              <Input disabled type="text" id="status" />
+              <Input disabled={this.state.seacrh} onChange={this.onChange}
+                maxLength="10" type="text" id="status" ref="status" 
+                value={this.state.equipment.status}
+              />
             </Col>
           </FormGroup>
           <h6>{this.state.status}</h6>
@@ -245,7 +330,7 @@ export default class EquipmentForm extends React.Component {
               onExiting={this.onExiting}
               onExited={this.onExited}
             >
-              <EquipmentList equipments={this.state.result}/>
+              <EquipmentList equipments={this.state.result} editEquipment={this.editEquipment}/>
             </Collapse>            
           </FormGroup>
         </Form>
