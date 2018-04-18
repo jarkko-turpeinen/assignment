@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom'
 import { Collapse, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import ContractDate from './../components/ContractDate'
 import EquipmentList from './../components/EquipmentList'
@@ -114,38 +115,35 @@ export default class EquipmentForm extends React.Component {
       save: false, 
       new: false, 
       cancel: false,
-      result: this.state.result
+      result: []
     });
-    // demo
-    window.setTimeout(
-      () => {
-        this.setState({
-          collapse: true,
-          seacrh: true, 
-          save: false, 
-          new: true, 
-          cancel: false,
-          result: [{ _id: 1, equipmentNumber: '1000000001', contractStartDate: '', status: 'Running'}]
-        })
-    }, 2000)
     
-    /* Fix CORS
-    axios.get('http://localhost:8001/assigment-app/equipment/1000000001')
-      .then(response => {
+    let search = async (equipmentNumber) => {
+      try {
+        let url = process.env.REACT_APP_REST_ENDPOINT_EQUIPMENT + equipmentNumber
+        console.log(url)
+        let response = await axios.get(url)
         console.log(response)
-        JSON.parse(response)  
-      })
-      .then(JSON => {
         this.setState({
-          result: JSON,
+          result: JSON.parse(response),
           collapse: true,
           seacrh: true, 
           save: false, 
           new: true, 
           cancel: false
-          })
+        })
+      } catch (error) {
+        console.log(error)
+      }
+      this.setState({
+        collapse: true,
+        seacrh: true, 
+        save: false, 
+        new: true, 
+        cancel: false
       })
-      */
+    }  
+    search(ReactDOM.findDOMNode(this.refs.equipmentNumber).value)
   }
 
   handleSave(event) {
@@ -193,7 +191,7 @@ export default class EquipmentForm extends React.Component {
           <FormGroup row>
             <Label sm={4} for="equipmentNumber">Equipment Number</Label>
             <Col>
-              <Input autoFocus type="text" id="equipmentNumber"
+              <Input autoFocus type="text" id="equipmentNumber" ref="equipmentNumber"
                 maxLength="10" onChange={this.onChange} />
             </Col>
           </FormGroup>

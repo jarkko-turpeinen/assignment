@@ -19,7 +19,7 @@ const EquipmentList = props => {
           <tbody>
           {props.equipments.map(equipment =>
             <tr key={equipment._id} >
-              <th scope="row">{equipment.equipmentNumber}</th>
+              <th>{equipment.equipmentNumber}</th>
               <td>{equipment.contractStartDate}</td>
               <td>{equipment.contractEndDate}</td>
               <td>{equipment.address}</td>
