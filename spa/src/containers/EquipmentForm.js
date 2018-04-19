@@ -9,6 +9,7 @@ export default class EquipmentForm extends React.Component {
     super(props)    
     this.handleSearch = this.handleSearch.bind(this)
     this.handleNew = this.handleNew.bind(this)
+    this.handleReset = this.handleReset.bind(this)
     this.handleSave = this.handleSave.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
     this.onEntering = this.onEntering.bind(this)
@@ -16,7 +17,7 @@ export default class EquipmentForm extends React.Component {
     this.onChange = this.onChange.bind(this)
     this.editEquipment = this.editEquipment.bind(this)
     this.state = {
-      equipment: {_id: '', _rev: '', equipmentNumber: '', address: '', contractStartDate: '', contractEndDate: '', status: ''},
+      equipment: this.getEmptyEquipment(),
       collapse: false, 
       seacrh: true, 
       save: false, 
@@ -25,6 +26,19 @@ export default class EquipmentForm extends React.Component {
       status: 'Good day! Type seach criteria and hit Enter!',
       result: []
     }
+  }
+
+  getEmptyEquipment() {
+    return ({
+        _id: null, 
+        _rev: null, 
+        equipmentNumber: '', 
+        address: '', 
+        contractStartDate: '', 
+        contractEndDate: '', 
+        status: ''
+      }
+    )
   }
 
   /**
@@ -210,11 +224,11 @@ export default class EquipmentForm extends React.Component {
   }
 
   /**
-   * New equipment mode is just buttons state
+   * New equipment mode
    */
   handleNew() {
     this.setState({
-      equipment: {_id: null, _rev: null, equipmentNumber: null, address: null, contractStartDate: null, contractEndDate: null, status: null},
+      equipment: this.getEmptyEquipment(),
       collapse: false, 
       seacrh: false, 
       save: true, 
@@ -222,6 +236,21 @@ export default class EquipmentForm extends React.Component {
       cancel: true
     });
     this.chattyStatus('Please fill the blanks and hit Enter to save or Esc to cancel!')
+  }
+
+    /**
+   * Reset clears form
+   */
+  handleReset() {
+    this.setState({
+      equipment: this.getEmptyEquipment(),
+      collapse: false, 
+      seacrh: true, 
+      save: false, 
+      new: true, 
+      cancel: false
+    });
+    this.chattyStatus('Add criterias and hit Enter to save or Esc to cancel!')
   }
 
   /**
@@ -235,6 +264,16 @@ export default class EquipmentForm extends React.Component {
     this.chattyStatus('Cancelled successfully!')
   }
 
+  /**
+   * Move cursor at the end of content
+   * @param {form field} event 
+   */
+  cursorAtEnd(event) {
+    var value = event.target.value
+    event.target.value = ''
+    event.target.value = value
+  }
+  
   /**
    * Editing mode is on when equipments Cloudant id and rev are known.
    * In others words service then makes update instead of save.
@@ -272,37 +311,42 @@ export default class EquipmentForm extends React.Component {
           <FormGroup row>
             <Label sm={4} for="equipmentNumber">Equipment Number</Label>
             <Col>
-              <Input autoFocus type="text" id="equipmentNumber" ref="equipmentNumber"
-                maxLength="10" onChange={this.onChange}
+              <Input autoFocus type="text" id="equipmentNumber"
+                maxLength="10" disabled={this.state.equipment._id} 
+                onChange={this.onChange}
                 value={this.state.equipment.equipmentNumber}
+                onFocus={this.cursorAtEnd}
               />
             </Col>
           </FormGroup>
           <FormGroup row>
             <Label sm={4} for="contractStartDate">Contract Start Date</Label>
             <Col>
-              <Input id="contractStartDate" ref="contractStartDate" 
+              <Input id="contractStartDate" 
                 onChange={this.onChange} disabled={this.state.seacrh}
                 value={this.state.equipment.contractStartDate}
+                onFocus={this.cursorAtEnd}
               />
             </Col>
           </FormGroup>
           <FormGroup row>
             <Label sm={4} for="contractEndDate">Contract End Date</Label>
             <Col>
-              <Input id="contractEndDate" ref="contractEndDate"
+              <Input id="contractEndDate"
                 onChange={this.onChange} disabled={this.state.seacrh}
                 value={this.state.equipment.contractEndDate}                
+                onFocus={this.cursorAtEnd}
               />
             </Col>
           </FormGroup>
           <FormGroup row>
             <Label sm={4} for="address">IP Address</Label>
             <Col>
-              <Input type="text" id="address" ref="address"
+              <Input type="text" id="address"
                 maxLength="20" onChange={this.onChange} 
                 disabled={this.state.seacrh}
                 value={this.state.equipment.address}
+                onFocus={this.cursorAtEnd}
               />
             </Col>
           </FormGroup>
@@ -310,8 +354,9 @@ export default class EquipmentForm extends React.Component {
           <Label sm={4} for="status">Status</Label>
             <Col>
               <Input disabled={this.state.seacrh} onChange={this.onChange}
-                maxLength="10" type="text" id="status" ref="status" 
+                maxLength="10" type="text" id="status" 
                 value={this.state.equipment.status}
+                onFocus={this.cursorAtEnd}
               />
             </Col>
           </FormGroup>
@@ -320,6 +365,9 @@ export default class EquipmentForm extends React.Component {
             <Col sm={{ offset: 4 }}>
               {this.state.seacrh && 
                 <Button color="primary" type="submit">Search</Button>}{' '}
+              {this.state.seacrh && 
+                <Button color="secondary" 
+                  onClick={this.handleReset}>Reset</Button>}{' '}
               {this.state.new && 
                 <Button color="secondary" 
                   onClick={this.handleNew}>New</Button>}{' '}
