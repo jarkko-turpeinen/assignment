@@ -250,7 +250,7 @@ export default class EquipmentForm extends React.Component {
       new: true, 
       cancel: false
     });
-    this.chattyStatus('Add criterias and hit Enter to save or Esc to cancel!')
+    this.chattyStatus('Add criterias and hit Enter to search!')
   }
 
   /**
