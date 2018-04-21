@@ -280,11 +280,9 @@ export default class EquipmentForm extends React.Component {
    * @param {td element that has _id and _rev in its id attribute} event 
    */
   editEquipment(event) {
-    console.log(event.target)
     let equipment = this.state.result.filter(
       equipment => { return equipment._id === event.target.id }
     )[0]
-    console.log(equipment)
     this.setState({
       equipment: equipment,
       collapse: false, 
