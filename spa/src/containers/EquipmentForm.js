@@ -280,12 +280,11 @@ export default class EquipmentForm extends React.Component {
    * @param {td element that has _id and _rev in its id attribute} event 
    */
   editEquipment(event) {
-    let equipment = this.state.result.find(
-      equipment => {
-        console.log(equipment)
-        return equipment._id = event.target.id
-      }
-    )
+    console.log(event.target)
+    let equipment = this.state.result.filter(
+      equipment => { return equipment._id === event.target.id }
+    )[0]
+    console.log(equipment)
     this.setState({
       equipment: equipment,
       collapse: false, 
@@ -383,8 +382,6 @@ export default class EquipmentForm extends React.Component {
               isOpen={this.state.collapse}
               onEntering={this.onEntering}
               onEntered={this.onEntered}
-              onExiting={this.onExiting}
-              onExited={this.onExited}
             >
               <EquipmentList equipments={this.state.result} editEquipment={this.editEquipment}/>
             </Collapse>            
