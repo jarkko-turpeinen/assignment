@@ -20,10 +20,10 @@ const EquipmentList = props => {
           {props.equipments.map(equipment =>
             <tr onClick={props.editEquipment} key={equipment.equipmentNumber} >
               <td id={equipment._id}>{equipment.equipmentNumber}</td>
-              <td>{equipment.contractStartDate}</td>
-              <td>{equipment.contractEndDate}</td>
-              <td>{equipment.address}</td>
-              <td>{equipment.status}</td>
+              <td id={equipment._id}>{equipment.contractStartDate}</td>
+              <td id={equipment._id}>{equipment.contractEndDate}</td>
+              <td id={equipment._id}>{equipment.address}</td>
+              <td id={equipment._id}>{equipment.status}</td>
             </tr>
           )}
           </tbody>
