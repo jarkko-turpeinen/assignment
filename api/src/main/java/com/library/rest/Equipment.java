@@ -45,13 +45,24 @@ public final class Equipment {
     }
 
     /**
-     * Equipment object must have valid Equipment Number
+     * Validates Equipment Status
+     *
+     * @param status Equipment status Stopped | Running
+     * @return boolean
+     */
+    public static boolean isValidStatus(String status) {
+        return status != null && status.matches("^(Stopped|Running)$");
+    }
+
+    /**
+     * Equipment object must have valid Equipment Number and Status
      *
      * @return boolean
      */
     @XmlTransient
     public final boolean isValid() {
-        return isValidEquipmentNumber(this.equipmentNumber);
+        return isValidEquipmentNumber(this.equipmentNumber)
+                & isValidStatus(this.status);
     }
 
     /**

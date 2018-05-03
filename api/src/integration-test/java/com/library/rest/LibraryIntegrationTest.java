@@ -19,8 +19,8 @@ public class LibraryIntegrationTest {
 
     Library library = new Library();
 
-    final Equipment testEquipment1 = new Equipment("1000000001", null, null, null, null);
-    final Equipment testEquipment2 = new Equipment("1000000002", null, null, null, null);
+    final Equipment testEquipment1 = new Equipment("1000000001", null, null, null, "Stopped");
+    final Equipment testEquipment2 = new Equipment("1000000002", null, null, null, "Running");
 
     @Before
     public void before() {
@@ -45,7 +45,7 @@ public class LibraryIntegrationTest {
     public void postEquipment_duplicate() throws Exception {
         thrown.expect(Exception.class);
         thrown.expectMessage(Library.duplicatedEquipment);
-        library.postEquipment(new Equipment(testEquipment1.getEquipmentNumber(),null,null,null,null));
+        library.postEquipment(new Equipment(testEquipment1.getEquipmentNumber(),null,null,null,"Stopped"));
     }
 
     @Test

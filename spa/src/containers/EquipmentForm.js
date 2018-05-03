@@ -2,6 +2,7 @@ import React from 'react'
 import { Collapse, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import EquipmentList from './../components/EquipmentList'
 import axios from 'axios'
+import {Equipments} from './../providers/Equipments'
 
 export default class EquipmentForm extends React.Component {
 
@@ -36,7 +37,7 @@ export default class EquipmentForm extends React.Component {
         address: '', 
         contractStartDate: '', 
         contractEndDate: '', 
-        status: ''
+        status: 'Stopped'
       }
     )
   }
@@ -176,6 +177,7 @@ export default class EquipmentForm extends React.Component {
         })
       } catch (error) {
         console.log(error)
+        this.chattyStatus('Search failed because of an ' + error.response.data)
       }
       this.setState({
         collapse: true,
@@ -217,7 +219,7 @@ export default class EquipmentForm extends React.Component {
         })
       } catch (error) {
         console.log(error)
-        this.chattyStatus('Save failed because of an ' + error)
+        this.chattyStatus('Save failed because of an ' + error.response.data)
       }
     }
     save()
@@ -254,12 +256,14 @@ export default class EquipmentForm extends React.Component {
   }
 
   /**
-   * Cancel editing mode by nulling _id and _rev 
-   * and resets buttons to default
+   * Cancel editing mode by resets buttons to default
    */
   handleCancel() {
     this.setState({
-      seacrh: true, save: false, new: true, cancel: false, _id: null, _rev: null
+      seacrh: true, 
+      save: false, 
+      new: true, 
+      cancel: false
     });
     this.chattyStatus('Cancelled successfully!')
   }
@@ -297,94 +301,100 @@ export default class EquipmentForm extends React.Component {
   render() {
     return (
       <div>
-        <Form onSubmit={ this.state.seacrh ? this.handleSearch : this.handleSave }
-          onKeyDown={
-            (event) => {
-              if (this.state.save & event.keyCode === 27) {
-                this.handleCancel()
-              }
-            }
-          }>
-          <FormGroup row>
-            <Label sm={4} for="equipmentNumber">Equipment Number</Label>
-            <Col>
-              <Input autoFocus type="text" id="equipmentNumber"
-                maxLength="10" disabled={this.state.equipment._id} 
-                onChange={this.onChange}
-                value={this.state.equipment.equipmentNumber}
-                onFocus={this.cursorAtEnd}
-              />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label sm={4} for="contractStartDate">Contract Start Date</Label>
-            <Col>
-              <Input id="contractStartDate" 
-                onChange={this.onChange} disabled={this.state.seacrh}
-                value={this.state.equipment.contractStartDate}
-                onFocus={this.cursorAtEnd}
-              />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label sm={4} for="contractEndDate">Contract End Date</Label>
-            <Col>
-              <Input id="contractEndDate"
-                onChange={this.onChange} disabled={this.state.seacrh}
-                value={this.state.equipment.contractEndDate}                
-                onFocus={this.cursorAtEnd}
-              />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label sm={4} for="address">IP Address</Label>
-            <Col>
-              <Input type="text" id="address"
-                maxLength="20" onChange={this.onChange} 
-                disabled={this.state.seacrh}
-                value={this.state.equipment.address}
-                onFocus={this.cursorAtEnd}
-              />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-          <Label sm={4} for="status">Status</Label>
-            <Col>
-              <Input disabled={this.state.seacrh} onChange={this.onChange}
-                maxLength="10" type="text" id="status" 
-                value={this.state.equipment.status}
-                onFocus={this.cursorAtEnd}
-              />
-            </Col>
-          </FormGroup>
-          <h6>{this.state.status}</h6>
-          <FormGroup check row>
-            <Col sm={{ offset: 4 }}>
-              {this.state.seacrh && 
-                <Button color="primary" type="submit">Search</Button>}{' '}
-              {this.state.seacrh && 
-                <Button color="secondary" 
-                  onClick={this.handleReset}>Reset</Button>}{' '}
-              {this.state.new && 
-                <Button color="secondary" 
-                  onClick={this.handleNew}>New</Button>}{' '}
-              {this.state.save && 
-                <Button color="primary" type="submit">Save</Button>}{' '}
-              {this.state.cancel && 
-                <Button color="secondary" 
-                  onClick={this.handleCancel} >Cancel</Button>}
-            </Col>
-          </FormGroup>
-          <FormGroup>
-            <Collapse
-              isOpen={this.state.collapse}
-              onEntering={this.onEntering}
-              onEntered={this.onEntered}
-            >
-              <EquipmentList equipments={this.state.result} editEquipment={this.editEquipment}/>
-            </Collapse>            
-          </FormGroup>
-        </Form>
+        <Equipments.Consumer>{(ctx) => (
+          <React.Fragment>
+            <Form onSubmit={ this.state.seacrh ? this.handleSearch : this.handleSave }
+              onKeyDown={
+                (event) => {
+                  if (this.state.save & event.keyCode === 27) {
+                    this.handleCancel()
+                  }
+                }
+              }>
+              <FormGroup row>
+                <Label sm={4} for="equipmentNumber">Equipment Number</Label>
+                <Col>
+                  <Input autoFocus type="text" id="equipmentNumber"
+                    maxLength="10" disabled={this.state.equipment._id} 
+                    onChange={this.onChange}
+                    value={this.state.equipment.equipmentNumber}
+                    onFocus={this.cursorAtEnd}
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={4} for="contractStartDate">Contract Start Date</Label>
+                <Col>
+                  <Input id="contractStartDate"  type="date" 
+                    onChange={this.onChange} disabled={this.state.seacrh}
+                    value={this.state.equipment.contractStartDate}
+                    onFocus={this.cursorAtEnd}
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={4} for="contractEndDate">Contract End Date</Label>
+                <Col>
+                  <Input id="contractEndDate" type="date"
+                    onChange={this.onChange} disabled={this.state.seacrh}
+                    value={this.state.equipment.contractEndDate}                
+                    onFocus={this.cursorAtEnd}
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Label sm={4} for="address">IP Address</Label>
+                <Col>
+                  <Input type="text" id="address"
+                    maxLength="20" onChange={this.onChange} 
+                    disabled={this.state.seacrh}
+                    value={this.state.equipment.address}
+                    onFocus={this.cursorAtEnd}
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+              <Label sm={4} for="status">Status</Label>
+                <Col>
+                  <Input disabled={this.state.seacrh} onChange={this.onChange}
+                    maxLength="10" type="text" id="status"
+                    placeholder="Stopped or Running" 
+                    pattern="^(Running|Stopped)$"
+                    value={this.state.equipment.status}
+                    onFocus={this.cursorAtEnd}
+                  />
+                </Col>
+              </FormGroup>
+              <h6>{this.state.status}</h6>
+              <FormGroup check row>
+                <Col sm={{ offset: 4 }}>
+                  {this.state.seacrh && 
+                    <Button color="primary" type="submit">Search</Button>}{' '}
+                  {this.state.seacrh && 
+                    <Button color="secondary" 
+                      onClick={this.handleReset}>Reset</Button>}{' '}
+                  {this.state.new && 
+                    <Button color="secondary" 
+                      onClick={this.handleNew}>New</Button>}{' '}
+                  {this.state.save && 
+                    <Button color="primary" type="submit">Save</Button>}{' '}
+                  {this.state.cancel && 
+                    <Button color="secondary" 
+                      onClick={this.handleCancel} >Cancel</Button>}
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Collapse
+                  isOpen={this.state.collapse}
+                  onEntering={this.onEntering}
+                  onEntered={this.onEntered}
+                >
+                  <EquipmentList equipments={this.state.result} editEquipment={this.editEquipment}/>
+                </Collapse>            
+              </FormGroup>
+            </Form>
+          </React.Fragment>)}
+        </Equipments.Consumer>
       </div>      
     );
   }

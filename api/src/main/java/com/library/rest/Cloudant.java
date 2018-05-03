@@ -56,7 +56,7 @@ public final class Cloudant {
                     }
                 }
             }
-            // Use first database if multiple are returned
+            // Set database
             {
                 final String dbName = getProperties().getProperty("dbName");
                 if (client.getAllDbs().contains(dbName)) {

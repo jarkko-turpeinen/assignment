@@ -27,9 +27,9 @@ public final class Library extends Application {
     /**
      * Validation exceptions
      */
-    public final static String invalidEquipmentNumber = "Parameter EquipmentNumber is invalid";
-    public final static String invalidLimit = "Parameter Limit is invalid";
-    public final static String invalidEquipment = "Parameter Equipment is invalid";
+    public final static String invalidEquipmentNumber = "Equipment Number is invalid";
+    public final static String invalidLimit = "Allowed limit range is 1 - " + limitMax;
+    public final static String invalidEquipment = "Equipment is invalid";
     public final static String duplicatedEquipment = "Duplicate Equipment Number";
 
     /**
@@ -62,7 +62,7 @@ public final class Library extends Application {
             }
         } catch (Exception e) {
             Logger.error(e.getMessage());
-            throw new Exception("getEquipment: " + e.getMessage());
+            throw e;
         }
         return result;
     }
@@ -105,7 +105,7 @@ public final class Library extends Application {
           }
         } catch (Exception e) {
             Logger.error(e.getMessage());
-            throw new Exception("getEquipments: " + e.getMessage());
+            throw e;
         }
         return result;
     }
@@ -144,7 +144,7 @@ public final class Library extends Application {
                     getEquipment(equipment.getEquipmentNumber()).forEach(
                             savedEquipment -> {
                                 if (savedEquipment.getEquipmentNumber().equals(equipment.getEquipmentNumber())) {
-                                    throw new RuntimeException(new Exception(duplicatedEquipment));
+                                    throw new RuntimeException(duplicatedEquipment);
                                 }
                             }
                     );
@@ -153,7 +153,7 @@ public final class Library extends Application {
             }
         } catch (Exception e) {
             Logger.error(e.getMessage());
-            throw new Exception("postEquipment: " + e.getMessage());
+            throw e;
         }
         return getEquipment(equipment.getEquipmentNumber()).get(0);
     }
@@ -183,7 +183,7 @@ public final class Library extends Application {
             }
         } catch (Exception e) {
             Logger.error(e.getMessage());
-            throw new Exception("removeEquipment: " + e.getMessage());
+            throw e;
         }
     }
 }
