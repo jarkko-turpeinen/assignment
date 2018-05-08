@@ -1,9 +1,7 @@
 package com.library.rest;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.Rule;
+import org.junit.*;
+
 import java.util.stream.IntStream;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -64,6 +62,7 @@ public class LibraryIntegrationTest {
      * Test all valid limit values (overkill, just for the show)
      */
     @Test
+    @Ignore
     public void getEquipments() throws Exception {
         IntStream
             .range(1, Library.limitMax + 1)

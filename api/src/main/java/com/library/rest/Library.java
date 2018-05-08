@@ -12,7 +12,7 @@ import static com.library.rest.Cloudant.getDatabase;
  * REST Service assigment-app for IOT Equipment metadata maintenance in IBM Cloudant NoSQL DB for IBM Cloud
  *
  * GET /assigment-app/equipment/{equipmentNumber}
- * GET /assigment-app/equipment/search?limit={[1-10]}
+ * GET /assigment-app/equipment/search?limit={[1-1000000]}
  * POST /assigment-app/equipment/{equipmentDocument}
  */
 @ApplicationPath("assigment-app")
@@ -22,7 +22,7 @@ public final class Library extends Application {
     /**
      * Maximum number of Equipments to return
      */
-    public final static Integer limitMax = 10;
+    public final static Integer limitMax = 1000000;
 
     /**
      * Validation exceptions
@@ -136,7 +136,12 @@ public final class Library extends Application {
             validateParameterEquipment(equipment);
             final Database db = getDatabase();
             if (db != null) {
-                if (equipment.get_id() != null) {
+                if (equipment.get_id() != null && equipment.get_rev() != null) {
+                    Equipment persisted = db.find(Equipment.class, equipment.get_id(), equipment.get_rev());
+                    if (!persisted.getEquipmentNumber().equals(equipment.getEquipmentNumber())) {
+                        Logger.debug("equipment number is illegally tampered!");
+                        throw new RuntimeException(invalidEquipment);
+                    }
                     Logger.debug("update");
                     db.update(equipment);
                 } else {
